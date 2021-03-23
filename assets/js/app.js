@@ -16,10 +16,11 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import NProgress from "nprogress"
 import {LiveSocket} from "phoenix_live_view"
-import * as echarts from 'echarts';
+import * as echarts from 'echarts'
 
+let Hooks = {}
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}})
+let liveSocket = new LiveSocket("/live", Socket, {hooks: Hooks, params: {_csrf_token: csrfToken}})
 
 // Show progress bar on live navigation and form submits
 window.addEventListener("phx:page-loading-start", info => NProgress.start())
@@ -34,3 +35,64 @@ liveSocket.connect()
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
+Hooks.Chart = {
+  mounted() {
+    const gem_types = JSON.parse(this.el.dataset.gem_types)
+    const locations = JSON.parse(this.el.dataset.exchange_locations)
+    const overall_statistics = JSON.parse(this.el.dataset.overall_statistics)
+
+    const option = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {            // Use axis to trigger tooltip
+          type: 'shadow'        // 'shadow' as default; can also be 'line' or 'shadow'
+        }
+      },
+      legend: {
+        data: gem_types
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'value'
+      },
+      yAxis: {
+        type: 'category',
+        data: locations
+      },
+      series: this.get_series(overall_statistics, gem_types, locations)
+    };
+    const chartDom = document.getElementById('chart')
+    const myChart = echarts.init(chartDom)
+    myChart.setOption(option)
+  },
+  get_series(overall_statistics, gem_types, locations) {
+    return gem_types.map((gem_type) => {
+      const statistics_by_gem = overall_statistics.filter((item) => {
+        return item.gem_type === gem_type
+      })
+
+      return {
+        name: gem_type,
+        type: 'bar',
+        stack: 'total',
+        label: {
+          show: true
+        },
+        emphasis: {
+          focus: 'series'
+        },
+        data: locations.map((location) => {
+          const record = statistics_by_gem.find((record) => {
+            return record.location_name === location
+          })
+          return record ? record.total_amount : 0
+        })
+      }
+    })
+  }
+}

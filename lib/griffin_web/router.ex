@@ -37,6 +37,8 @@ defmodule GriffinWeb.Router do
   scope "/", GriffinWeb do
     pipe_through [:browser, :auth, :ensure_auth]
 
+    live "/my_dashboard", DashboardLive.Index, :index
+
     live "/spider_configs", SpiderConfigLive.Index, :index
     live "/spider_configs/new", SpiderConfigLive.Index, :new
     live "/spider_configs/:id/edit", SpiderConfigLive.Index, :edit

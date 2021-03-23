@@ -1,1 +1,4 @@
-<%= render GriffinWeb.ModuleView, "title.html", %{title: "Dashboard"} %>
+<div phx-hook="Chart" id="overall_statistics" data-overall_statistics="<%= @overall_statistics %>" data-gem_types="<%= @gem_types %>" data-exchange_locations="<%= @exchange_locations %>"></div>
+<div phx-update="ignore">
+  <div id="chart" style="width:100%; height:400px;" ></div>
+</div>

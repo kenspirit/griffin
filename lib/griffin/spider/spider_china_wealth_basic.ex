@@ -1,6 +1,6 @@
 defmodule Lolth.Spider.Impl.ChinaWealthBasic do
   use Lolth.Spider.Impl
-  use Tesla
+  use Tesla # Consider to switch to Finch
 
   @domain "https://www.chinawealth.com.cn/LcSolrSearch.go"
 
