@@ -1,0 +1,21 @@
+<div id="<%= @id %>">
+  <%= live_component @socket, GriffinWeb.EditFormComponent,
+    id: @id,
+    title: @title,
+    description: "Spider config Profile",
+    changeset: @changeset,
+    action: @action,
+    params: @params,
+    index_path_fn: &Routes.spider_config_index_path/3,
+    fields: [
+      %{name: :name, type: "text", class: "col-span-6"},
+      %{name: :type, type: "text", class: "col-span-3"},
+      %{name: :root_url, type: "text", class: "col-span-3"},
+      %{name: :worker_count, type: "number", class: "col-span-2"},
+      %{name: :crawl_interval, type: "number", class: "col-span-2"},
+      %{name: :revisit_interval, type: "number", class: "col-span-2"},
+      %{name: :params, label: "JSON Parameters", type: "map", class: "col-span-6"},
+      %{name: :disabled, type: "boolean", class: "col-span-1"},
+    ]
+  %>
+</div>

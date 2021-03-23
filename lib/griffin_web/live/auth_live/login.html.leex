@@ -1,0 +1,45 @@
+<div>
+  <section class="absolute w-full h-full">
+    <div class="absolute top-0 w-full h-full bg-gray-900"
+      style="background-image: url(./images/register_bg.jpg); background-size: 100%; background-repeat: no-repeat;">
+    </div>
+    <div class="container mx-auto px-4 h-full">
+      <div class="flex content-center items-center justify-center h-full">
+        <div class="w-full lg:w-6/12 px-4">
+          <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-300 border-0">
+            <div class="flex-auto px-4 lg:px-10 py-10 pt-10">
+              <%= f = form_for @changeset, "#",
+                  id: "login-form",
+                  phx_change: "validate",
+                  phx_submit: "save",
+                  as: :user %>
+                <div class="relative w-full mb-3">
+                  <%= label f, :loginid, "Login ID", class: "block uppercase text-gray-700 text-xs font-bold mb-2" %>
+                  <%= text_input f, :loginid, class: "px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full", style: "transition: all 0.15s ease 0s;" %>
+                  <%= error_tag f, :loginid %>
+                </div>
+                <div class="relative w-full mb-3">
+                  <%= label f, :totp_token, "Token", class: "block uppercase text-gray-700 text-xs font-bold mb-2" %>
+                  <%= text_input f, :totp_token, class: "px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:shadow-outline w-full", style: "transition: all 0.15s ease 0s;" %>
+                  <%= error_tag f, :totp_token %>
+                </div>
+                <div class="text-center mt-6">
+                  <%= submit "Sign In", phx_disable_with: "Signing In ...", class: "bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full", style: "transition: all 0.15s ease 0s;" %>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="relative flex flex-wrap mt-6 text-sm">
+            <div class="w-1/2">
+              <a href="#pablo" class="text-gray-900">Lost Authenticator?</a>
+            </div>
+            <div class="w-1/2 text-right">
+              <a href="#pablo" class="text-gray-900"><%= live_redirect "Signup", to: Routes.auth_signup_path(@socket, :signup) %></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%= render GriffinWeb.ModuleView, "footer.html", assigns %>
+  </section>
+</div>

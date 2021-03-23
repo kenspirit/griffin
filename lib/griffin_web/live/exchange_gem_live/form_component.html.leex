@@ -1,0 +1,19 @@
+<div id="<%= @id %>">
+  <%= live_component @socket, GriffinWeb.EditFormComponent,
+    id: @id,
+    title: @title,
+    description: "Exchange gem Profile",
+    changeset: @changeset,
+    action: @action,
+    params: @params,
+    index_path_fn: &Routes.exchange_gem_index_path/3,
+    fields: [
+      %{name: :gem_id, type: "hidden"},
+      %{name: :keyword, label: "Gem", type: "component", id: @id, component: GriffinWeb.AutoCompleteComponent, opts: [search_results: @search_results, selected_item: @selected_item], class: "col-span-6"},
+      %{name: :location_id, type: "select", label: "Location", selections: Enum.map(@locations, &{&1.name, &1.id})},
+      %{name: :amount, type: "number"},
+      %{name: :price, type: "number"},
+      %{name: :exchange_on, type: "date", class: "col-span-6"},
+    ]
+  %>
+</div>

@@ -1,0 +1,14 @@
+<div>
+  <label class="form-field-label"><%= @selected_item %></label>
+  <%= search_input @f, :keyword, value: input_value(@f, :keyword), "phx-keyup": "autocomplete", "phx-debounce": "500", placeholder: "Input keyword to search", class: "form-field" %>
+
+  <%= if @search_results != [] do %>
+    <div class="absolute z-50 rounded border border-gray-100 shadow py-2 bg-white overflow-y-scroll md:h-40">
+      <%= for search_result <- @search_results do %>
+        <div class="cursor-pointer p-2 hover:bg-gray-200 focus:bg-gray-200" phx-target="#<%= @id %>" phx-click="pick" phx-value-key="<%= search_result.id %>">
+          <%= search_result.location %>: <%= search_result.name %>(<%= search_result.code %>)
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

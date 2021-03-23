@@ -1,0 +1,67 @@
+<div class="mt-8">
+  <div class="md:grid md:grid-cols-3 md:gap-6">
+    <div class="md:col-span-1">
+      <div class="px-4 sm:px-0">
+        <h3 class="modal_title"><%= @title %></h3>
+        <p class="mt-1 text-sm text-gray-600">
+          <%= @description %>
+        </p>
+      </div>
+    </div>
+    <div class="mt-5 md:mt-0 md:col-span-2">
+      <%= f = form_for @changeset, "#",
+        id: "edit-form",
+        phx_target: "##{@id}",
+        phx_change: "validate",
+        phx_submit: "save" %>
+
+        <%= if @action == :show do %>
+        <fieldset disabled>
+        <% else %>
+        <fieldset>
+        <% end %>
+
+        <div class="shadow overflow-hidden sm:rounded-md">
+          <div class="px-4 py-5 bg-white sm:p-6">
+            <div class="grid grid-cols-6 gap-6">
+              <%= for field <- @fields do %>
+                <%= if field.type == "hidden" do %>
+                  <%= hidden_input f, field.name %>
+                <% else %>
+                  <div class="<%= Map.get(field, :class, "col-span-6 sm:col-span-3 lg:col-span-2") %>">
+                    <%= label f, field.name, Map.get(field, :label, String.capitalize(Atom.to_string(field.name))), class: "form-field-label" %>
+                    <%= case field.type do
+                      "component" ->
+                        live_component @socket, field.component, field.opts ++ [id: field.id, f: f]
+                      "date" ->
+                        my_date_select f, field.name, class: "date-select-field"
+                      "number" ->
+                        number_input f, field.name, class: "form-field"
+                      "text" ->
+                        text_input f, field.name, class: "form-field"
+                      "select" ->
+                        select f, field.name, field.selections, class: "form-field"
+                      "boolean" ->
+                        checkbox f, field.name
+                      "map" ->
+                        textarea f, field.name, class: "form-field"
+                    end %>
+                    <%= error_tag f, field.name %>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+          <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+            <%= if @action == :show do %>
+            <%= live_patch "Close", to: @index_path_fn.(@socket, :index, @params), class: "btn-primary" %>
+            <% else %>
+            <%= submit "Save" , phx_disable_with: "Saving...", class: "btn-primary" %>
+            <% end %>
+          </div>
+        </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>

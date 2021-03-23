@@ -1,0 +1,55 @@
+
+<%%= if @live_action in [:new, :show, :edit] do %>
+  <%%= live_modal @socket, <%= inspect context.web_module %>.<%= inspect Module.concat(schema.web_namespace, schema.alias) %>Live.FormComponent,
+    id: "<%= schema.singular %>-modal-#{@entity.id || :new}",
+    title: @page_title,
+    action: @live_action,
+    entity: @entity,
+    current_user: @current_user,
+    params: @params,
+    return_to: Routes.<%= schema.route_helper %>_index_path(@socket, :index, @params)
+  %>
+<%% end %>
+
+<%%= render <%= inspect context.web_module %>.ModuleView, "title.html", %{title: "Listing <%= schema.human_plural %>"} %>
+
+<%%= live_component @socket, <%= inspect context.web_module %>.SearchFormComponent,
+  id: "<%= schema.singular %>-search",
+  search_criteria: @search_criteria,
+  fields: [<%= for field <- Enum.map(schema.attrs, fn
+      {key, :integer} ->
+        ~s(%{name: #{inspect(key)}, type: "number"},)
+      {key, :float} ->
+        ~s(%{name: #{inspect(key)}, type: "number"},)
+      {key, :decimal} ->
+        ~s(%{name: #{inspect(key)}, type: "number"},)
+      {key, :string} ->
+        ~s(%{name: #{inspect(key)}, type: "text"},)
+      {key, :date} ->
+        ~s(%{name: #{inspect(key)}, type: "date"},)
+      {key, :boolean} ->
+        ~s(%{name: #{inspect(key)}, type: "boolean"},)
+    end) do %>
+    <%= field %><% end %>
+  ]
+%>
+
+<%%= live_component @socket, <%= inspect context.web_module %>.GridActionsComponent,
+  buttons: [
+    %{class: "btn-primary", action: live_patch("New <%= schema.human_singular %>", to: Routes.<%= schema.route_helper %>_index_path(@socket, :new, @params)) }
+  ]
+%>
+
+<%%= live_component @socket, <%= inspect context.web_module %>.GridComponent,
+  id: "<%= schema.singular %>",
+  current_user: @current_user,
+  params: @params,
+  fields: [<%= for field <- Enum.map(schema.attrs, fn
+      {key, _} ->
+        ~s(%{name: #{inspect(key)}, width: "w-1/12"},)
+    end) do %>
+    <%= field %><% end %>
+  ],
+  data: @data,
+  index_path_fn: &Routes.<%= schema.route_helper %>_index_path/4
+%>

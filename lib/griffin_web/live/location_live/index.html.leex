@@ -1,0 +1,41 @@
+
+<%= if @live_action in [:new, :show, :edit] do %>
+  <%= live_modal @socket, GriffinWeb.LocationLive.FormComponent,
+    id: "location-modal-#{@entity.id || :new}",
+    title: @page_title,
+    action: @live_action,
+    entity: @entity,
+    current_user: @current_user,
+    params: @params,
+    return_to: Routes.location_index_path(@socket, :index, @params)
+  %>
+<% end %>
+
+<%= render GriffinWeb.ModuleView, "title.html", %{title: "Listing Locations"} %>
+
+<%= live_component @socket, GriffinWeb.SearchFormComponent,
+  id: "location-search",
+  search_criteria: @search_criteria,
+  fields: [
+    %{name: :name, label: "Code/Name/English Name", type: "text"}
+  ]
+%>
+
+<%= live_component @socket, GriffinWeb.GridActionsComponent,
+  buttons: [
+    %{class: "btn-primary", action: live_patch("New Location", to: Routes.location_index_path(@socket, :new, @params)) }
+  ]
+%>
+
+<%= live_component @socket, GriffinWeb.GridComponent,
+  id: "location",
+  current_user: @current_user,
+  params: @params,
+  fields: [
+    %{name: :code, width: "w-1/6"},
+    %{name: :name, width: "w-1/6"},
+    %{name: :enname, label: "English Name", width: "w-1/6"}
+  ],
+  data: @data,
+  index_path_fn: &Routes.location_index_path/4
+%>

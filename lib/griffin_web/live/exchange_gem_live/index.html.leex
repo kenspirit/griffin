@@ -1,0 +1,50 @@
+
+<%= if @live_action in [:new, :show, :edit, :copy] do %>
+  <%= live_modal @socket, GriffinWeb.ExchangeGemLive.FormComponent,
+    id: "exchange_gem-modal-#{@entity.id || :new}",
+    title: @page_title,
+    action: @live_action,
+    entity: @entity,
+    current_user: @current_user,
+    params: @params,
+    locations: @locations,
+    search_results: @search_results,
+    selected_item: @selected_item,
+    return_to: Routes.exchange_gem_index_path(@socket, :index, @params)
+  %>
+<% end %>
+
+<%= render GriffinWeb.ModuleView, "title.html", %{title: "Listing Exchange gems"} %>
+
+<%= live_component @socket, GriffinWeb.ExchangeGemLive.SearchFormComponent,
+  id: "exchange_gem-search",
+  search_criteria: @search_criteria,
+  gem_types: @gem_types,
+  locations: @locations,
+  search_results: @search_results,
+  selected_item: @selected_item
+%>
+
+<%= live_component @socket, GriffinWeb.GridActionsComponent,
+  buttons: [
+    %{class: "btn-primary", action: live_patch("New Exchange gem", to: Routes.exchange_gem_index_path(@socket, :new, @params)) }
+  ]
+%>
+
+<%= live_component @socket, GriffinWeb.GridComponent,
+  id: "exchange_gem",
+  current_user: @current_user,
+  params: @params,
+  fields: [
+    %{name: :location, width: "w-1/6"},
+    %{name: :gem, width: "w-3/12"},
+    %{name: :amount, width: "w-1/6"},
+    %{name: :price, width: "w-1/12"},
+    %{name: :exchange_on, width: "w-1/6"},
+  ],
+  data: @data,
+  index_path_fn: &Routes.exchange_gem_index_path/4 do %>
+<%= if @editable do %>
+<span><%= live_patch "Copy", to: Routes.exchange_gem_index_path(@socket, :copy, @entry, @params), class: "table-row-actions" %></span>
+<% end %>
+<% end %>

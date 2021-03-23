@@ -1,0 +1,17 @@
+<div id="<%= @id %>">
+  <%= live_component @socket, GriffinWeb.EditFormComponent,
+    id: @id,
+    title: @title,
+    description: "Shares across the platform.  Code must be unique.",
+    changeset: @changeset,
+    action: @action,
+    params: @params,
+    index_path_fn: &Routes.gem_index_path/3,
+    fields: [
+      %{name: :code, type: "text", class: "col-span-6"},
+      %{name: :name, type: "text", class: "col-span-6"},
+      %{name: :type, type: "select", selections: Enum.map(@gem_types, &{&1.name, &1.code})},
+      %{name: :location, type: "select", selections: Enum.map(@locations, &{&1.name, &1.code})}
+    ]
+  %>
+</div>

@@ -1,0 +1,14 @@
+<div id="<%= @id %>">
+  <%= live_component @socket, GriffinWeb.EditFormComponent,
+    id: @id,
+    title: @title,
+    description: "Exchange location Profile",
+    changeset: @changeset,
+    action: @action,
+    params: @params,
+    index_path_fn: &Routes.exchange_location_index_path/3,
+    fields: [
+      %{name: :name, type: "text", class: "col-span-6"},
+    ]
+  %>
+</div>

@@ -1,0 +1,61 @@
+<div class="flex flex-col">
+  <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+    <div class="py-2 align-middle inline-block min-w-full shadow overflow-hidden border-b border-gray-200 sm:px-6 lg:px-8 sm:rounded-lg">
+      <table id="<%= @id %>" class="table-main">
+        <thead class="table-header">
+          <tr class="table-header-row">
+            <%= for field <- @fields do %>
+              <th scope="col" class="<%= field.width %> table-header-cell">
+                <%= Map.get(field, :label, field.name) %>
+              </th>
+            <% end %>
+            <th scope="col" class="relative px-6 py-3">
+              <span class="sr-only">Actions</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          <%= for entry <- @data.entries do %>
+          <tr id="<%= @id %>-<%= entry.id %>" class="table-row">
+            <%= for field <- @fields do %>
+              <td class="<%= field.width %> table-cell">
+                <%= get_in(entry, [Access.key(field.name)]) %>
+              </td>
+            <% end %>
+            <td class="table-cell">
+              <%= if @default_entry_actions do %>
+                <span><%= live_patch "Show", to: @index_path_fn.(@socket, :show, entry, @params), class: "table-row-actions" %></span>
+                <%= if is_editable?(@current_user, entry) do %>
+                <span><%= live_patch "Edit", to: @index_path_fn.(@socket, :edit, entry, @params), class: "table-row-actions" %></span>
+                <% end %>
+                <%= if Griffin.Accounts.is_admin_user(@current_user) do %>
+                <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: entry.id, phx_value_params: Jason.encode!(@params), data: [confirm: "Are you sure?"], class: "table-row-actions" %></span>
+                <% end %>
+              <% end %>
+              <%= if not is_nil(@inner_block) do
+                render_block(@inner_block, entry: entry, editable: is_editable?(@current_user, entry), is_admin: Griffin.Accounts.is_admin_user(@current_user))
+              end %>
+            </td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="mt-2 flex-1 flex justify-end">
+    <%= if is_nil(@data.metadata.before) do %>
+    <button disabled class="btn-secondary sm:text-gray-300">
+    <% else %>
+    <button phx-click="get_by_page" phx-value-before="<%= @data.metadata.before %>" class="btn-secondary">
+    <% end %>
+      &lt;
+    </button>
+    <%= if is_nil(@data.metadata.after) do %>
+    <button disabled class="btn-secondary sm:text-gray-300">
+    <% else %>
+    <button phx-click="get_by_page" phx-value-after="<%= @data.metadata.after %>" class="btn-secondary">
+    <% end %>
+      &gt;
+    </button>
+  </div>
+</div>

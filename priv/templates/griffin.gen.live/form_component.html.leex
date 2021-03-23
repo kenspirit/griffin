@@ -1,0 +1,29 @@
+<div id="<%%= @id %>">
+  <%%= live_component @socket, <%= inspect context.web_module %>.EditFormComponent,
+    id: @id,
+    title: @title,
+    description: "<%= schema.human_singular %> Profile",
+    changeset: @changeset,
+    action: @action,
+    params: @params,
+    index_path_fn: &Routes.<%= schema.route_helper %>_index_path/3,
+    fields: [<%= for field <- Enum.map(schema.attrs, fn
+      {key, :integer} ->
+        ~s(%{name: #{inspect(key)}, type: "number", class: "col-span-6"},)
+      {key, :decimal} ->
+        ~s(%{name: #{inspect(key)}, type: "number", class: "col-span-6"},)
+      {key, :float} ->
+        ~s(%{name: #{inspect(key)}, type: "number", class: "col-span-6"},)
+      {key, :string} ->
+        ~s(%{name: #{inspect(key)}, type: "text", class: "col-span-6"},)
+      {key, :date} ->
+        ~s(%{name: #{inspect(key)}, type: "date", class: "col-span-6"},)
+      {key, :boolean} ->
+        ~s(%{name: #{inspect(key)}, type: "boolean", class: "col-span-6"},)
+      {key, :map} ->
+        ~s(%{name: #{inspect(key)}, type: "map", class: "col-span-6"},)
+    end) do %>
+      <%= field %><% end %>
+    ]
+  %>
+</div>

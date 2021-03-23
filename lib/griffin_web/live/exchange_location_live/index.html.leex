@@ -1,0 +1,39 @@
+
+<%= if @live_action in [:new, :show, :edit] do %>
+  <%= live_modal @socket, GriffinWeb.ExchangeLocationLive.FormComponent,
+    id: "exchange_location-modal-#{@entity.id || :new}",
+    title: @page_title,
+    action: @live_action,
+    entity: @entity,
+    current_user: @current_user,
+    params: @params,
+    return_to: Routes.exchange_location_index_path(@socket, :index, @params)
+  %>
+<% end %>
+
+<%= render GriffinWeb.ModuleView, "title.html", %{title: "Listing Exchange locations"} %>
+
+<%= live_component @socket, GriffinWeb.SearchFormComponent,
+  id: "exchange_location-search",
+  search_criteria: @search_criteria,
+  fields: [
+    %{name: :name, type: "text"},
+  ]
+%>
+
+<%= live_component @socket, GriffinWeb.GridActionsComponent,
+  buttons: [
+    %{class: "btn-primary", action: live_patch("New Exchange location", to: Routes.exchange_location_index_path(@socket, :new, @params)) }
+  ]
+%>
+
+<%= live_component @socket, GriffinWeb.GridComponent,
+  id: "exchange_location",
+  current_user: @current_user,
+  params: @params,
+  fields: [
+    %{name: :name, width: "w-1/4"},
+  ],
+  data: @data,
+  index_path_fn: &Routes.exchange_location_index_path/4
+%>

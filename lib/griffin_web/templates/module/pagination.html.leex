@@ -1,0 +1,16 @@
+<div class="mt-2 flex-1 flex justify-end">
+  <%= if is_nil(@data.metadata.before) do %>
+  <button disabled class="btn-secondary sm:text-gray-300">
+  <% else %>
+  <button phx-click="get_by_page" phx-value-before="<%= @data.metadata.before %>" class="btn-secondary">
+  <% end %>
+    &lt;
+  </button>
+  <%= if is_nil(@data.metadata.after) do %>
+  <button disabled class="btn-secondary sm:text-gray-300">
+  <% else %>
+  <button phx-click="get_by_page" phx-value-after="<%= @data.metadata.after %>" class="btn-secondary">
+  <% end %>
+    &gt;
+  </button>
+</div>

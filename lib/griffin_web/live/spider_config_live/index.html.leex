@@ -1,0 +1,45 @@
+
+<%= if @live_action in [:new, :show, :edit] do %>
+  <%= live_modal @socket, GriffinWeb.SpiderConfigLive.FormComponent,
+    id: "spider_config-modal-#{@entity.id || :new}",
+    title: @page_title,
+    action: @live_action,
+    entity: @entity,
+    current_user: @current_user,
+    params: @params,
+    return_to: Routes.spider_config_index_path(@socket, :index, @params)
+  %>
+<% end %>
+
+<%= render GriffinWeb.ModuleView, "title.html", %{title: "Listing Spider configs"} %>
+
+<%= live_component @socket, GriffinWeb.SearchFormComponent,
+  id: "spider_config-search",
+  search_criteria: @search_criteria,
+  fields: [
+    %{name: :name, type: "text"},
+    %{name: :type, type: "select", selections: @types},
+  ]
+%>
+
+<%= live_component @socket, GriffinWeb.GridActionsComponent,
+  buttons: [
+    %{class: "btn-primary", action: live_patch("New Spider config", to: Routes.spider_config_index_path(@socket, :new, @params)) }
+  ]
+%>
+
+<%= live_component @socket, GriffinWeb.GridComponent,
+  id: "spider_config",
+  current_user: @current_user,
+  params: @params,
+  fields: [
+    %{name: :name, width: "w-1/6"},
+    %{name: :type, width: "w-1/6"},
+    %{name: :root_url, label: "Root URL", width: "w-1/12"},
+    %{name: :worker_count, label: "Worker Count", width: "w-1/12"},
+    %{name: :crawl_interval, label: "Crawl Interval", width: "w-1/12"},
+    %{name: :disabled, width: "w-1/12"},
+  ],
+  data: @data,
+  index_path_fn: &Routes.spider_config_index_path/4
+%>
